@@ -19,7 +19,7 @@ pub struct TeamRanking {
     points: u8,
     goals: u8,
     goalsAgainst: u8,
-    goalDifference: u8
+    goalDifference: i8
 }
 
 fn main() {
@@ -35,7 +35,7 @@ fn main() {
     };
 }
 
-fn get_ranking(league: String) -> (String, TeamRanking) {
+fn get_ranking(league: String) -> (String, Vec<TeamRanking>) {
     let url = API_URL.to_string() + &league.to_string() + "/leagueTable";
     let client = Client::new();
 
@@ -49,9 +49,13 @@ fn get_ranking(league: String) -> (String, TeamRanking) {
     let json_body = Json::from_str(&body).unwrap();
     let json_object = json_body.as_object().unwrap();
     let caption = json_object.get("leagueCaption").unwrap();
-    let ranking = json_object.get("standing").unwrap()[0].to_string();
+    let rankings = json_object.get("standing").unwrap();
 
-    let team_ranking: TeamRanking = json::decode(&ranking).unwrap();
+    let mut team_rankings = Vec::new();
+    for ranking in rankings.as_array().unwrap() {
+        let team_ranking: TeamRanking = json::decode(&ranking.to_string()).unwrap();
+        team_rankings.push(team_ranking);
+    }
 
-    (caption.to_string(), team_ranking)
+    (caption.to_string(), team_rankings)
 }
