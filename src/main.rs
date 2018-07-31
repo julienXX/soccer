@@ -144,6 +144,7 @@ fn fetch_standings(url: hyper::Uri) -> impl Future<Item=StandingsRoot, Error=Fet
         .from_err::<FetchError>()
         .and_then(|body| {
             let body_string = std::str::from_utf8(&body).unwrap();
+            println!("{:?}", body_string);
             let standings: StandingsRoot = serde_json::from_str(&body_string)?;
             Ok(standings)
         })
@@ -157,11 +158,11 @@ fn extract_standings(standing_tables: Vec<StandingTable>) -> Vec<Standing> {
 fn create_table(standings: Vec<Standing>, competition: Competition) -> String {
     let mut t = String::new();
     t.push_str(&format!("{}\n---\n\n", competition.name));
-    t.push_str(&format!("{0: <9} | {1: <30} | {2: <6} | {3: <6} | {4: <3} | {5: <4} | {6: <4} | {7: <5} | {8: <7} | {9: <4}\n",
-                        "Position", "Team", "Played", "Points", "Won", "Draw", "Lost", "Goals", "Against", "Diff"));
+    t.push_str(&format!("{0: <3} | {1: <26} | {2: <2} | {3: <3} | {4: <1} | {5: <1} | {6: <1} | {7: <1} | {8: <2} | {9: <2}\n",
+                        "Pos", "Team", "GP", "PTS", "W", "D", "L", "G", "GA", "GD"));
 
     for standing in standings {
-        t.push_str(&format!("{0: <9} | {1: <30} | {2: <6} | {3: <6} | {4: <3} | {5: <4} | {6: <4} | {7: <5} | {8: <7} | {9: <4}\n",
+        t.push_str(&format!("{0: <3} | {1: <26} | {2: <2} | {3: <3} | {4: <1} | {5: <1} | {6: <1} | {7: <1} | {8: <2} | {9: <2}\n",
                             standing.position,
                             standing.team.name,
                             standing.playedGames,
