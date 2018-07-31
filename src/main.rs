@@ -95,7 +95,7 @@ fn competitions_to_gophermap() -> String {
     for competition in competitions() {
         println!("Building competition: {}", competition.name);
 
-        let competition_line = format!("h{}\t{}.txt\n", competition.name, competition.id);
+        let competition_line = format!("0{}\t{}.txt\n", competition.name, competition.id);
         gophermap.push_str(&competition_line);
 
         build_standings_for(competition);
