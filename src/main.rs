@@ -9,6 +9,9 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 
+extern crate deunicode;
+use deunicode::deunicode;
+
 use hyper::{Body, Client, Request};
 use hyper::header::HeaderValue;
 use hyper::rt::{self, Future, Stream};
@@ -157,14 +160,14 @@ fn extract_standings(standing_tables: Vec<StandingTable>) -> Vec<Standing> {
 
 fn create_table(standings: Vec<Standing>, competition: Competition) -> String {
     let mut t = String::new();
-    t.push_str(&format!("{}\n---\n\n", competition.name));
-    t.push_str(&format!("{0: <3} | {1: <26} | {2: <2} | {3: <3} | {4: <1} | {5: <1} | {6: <1} | {7: <1} | {8: <2} | {9: <2}\n",
+    t.push_str(&format!("{}\n---\n\n", deunicode(&competition.name)));
+    t.push_str(&format!("{0: <3} | {1: <28} | {2: <2} | {3: <3} | {4: <1} | {5: <1} | {6: <1} | {7: <1} | {8: <2} | {9: <2}\n",
                         "Pos", "Team", "GP", "PTS", "W", "D", "L", "G", "GA", "GD"));
 
     for standing in standings {
-        t.push_str(&format!("{0: <3} | {1: <26} | {2: <2} | {3: <3} | {4: <1} | {5: <1} | {6: <1} | {7: <1} | {8: <2} | {9: <2}\n",
+        t.push_str(&format!("{0: <3} | {1: <28} | {2: <2} | {3: <3} | {4: <1} | {5: <1} | {6: <1} | {7: <1} | {8: <2} | {9: <2}\n",
                             standing.position,
-                            standing.team.name,
+                            deunicode(&standing.team.name),
                             standing.playedGames,
                             standing.points,
                             standing.won,
